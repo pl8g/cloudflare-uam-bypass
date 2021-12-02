@@ -2,6 +2,9 @@
 
 Our Website [https://over-spam.space/](https://over-spam.space/) !
 
+### Additional Informations
+ - The proxies type are `http,https` ...
+
 ### Installation
 Install the app on the server
 ```sh
