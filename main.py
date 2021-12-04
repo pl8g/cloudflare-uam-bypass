@@ -27,7 +27,6 @@
 import random
 import colored
 import time
-from urllib.parse import urlparse
 import socket
 import socks
 import threading
