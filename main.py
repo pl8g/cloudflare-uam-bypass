@@ -57,6 +57,7 @@ class Target():
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-infobars")
         options.add_argument("--disable-logging")
+        options.add_argument('--no-sandbox')
         options.add_argument('--proxy-server=%s' % proxy)
         #options.add_argument(f"--user-agent={random.choice(config['headers'])}")
         options.add_argument("--disable-login-animations")
