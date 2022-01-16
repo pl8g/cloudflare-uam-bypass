@@ -148,7 +148,7 @@ class Target():
         network['raw'] += 'Cache-Control: max-age=0\r\n'
         if cookie != False:
             network['raw'] += 'Cookie: ' + cookie + '\r\n'
-        network['raw'] += f'sec-ch-ua " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"\r\n'
+        network['raw'] += f'sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"\r\n'
         network['raw'] += 'sec-ch-ua-mobile: ?0\r\n'
         network['raw'] += 'sec-ch-ua-platform: "Windows"\r\n'
         network['raw'] += 'sec-fetch-dest: empty\r\n'
